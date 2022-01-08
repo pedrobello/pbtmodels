@@ -1,0 +1,10 @@
+Package: pbtmodels
+Type: Package
+Title: Population-based threshold models package  
+Version: 0.1.01
+Author: Pedro Bello
+Maintainer: Pedro Bello <pedrobello@gmail.com>
+Description: This package is intended to make more practical the use of PBTMs in seed physiology and other areas.
+License: Open
+Encoding: UTF-8
+RoxygenNote: 7.1.2
