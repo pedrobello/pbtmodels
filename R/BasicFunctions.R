@@ -3,7 +3,7 @@
 #' A function that calculates the required time to a desired fraction in cumulative curves and respective rate.
 #'
 #' This function allows you to calculate the time to a desired cumulative fraction and respective germination rate. Use this function on raw data to avoid loss of points closer to the desired cumulative fraction.
-#' @param data time course and cumulative dataset. Several treatments can be used at once as long as it respects the template and column names provided. A column with time in hours (CumTime) + a column with cumulative fractions (cumfraction) are required with at least one additional column for relevant treatment (e.g., germination temperature or water potential)
+#' @param data time course and cumulative dataset. Several treatments can be used at once as long as it respects the template and column names provided. A column with time in hours (CumTime) + a column with cumulative fractions (CumFraction) are required with at least one additional column for relevant treatment (e.g., germination temperature or water potential)
 #' @param fraction from 0 to 1 used to calculate the time required for that level to be obtained in the cumulative time course. Standard value is 0.5 (50 percent), to calculate the time to 50 percent germination (T50) and respective germination rate (GR50). fraction level can be entered and be used for calculation and change column name.
 #' @param treat_1,treat_2,treat_3,treat_4,treat_5 are the names of the treatment columns to separate the dataset. The time course cumulative curves will be grouped for each distinct treatment that should be informed here. These column names do not need to be informed in case the provided template file is used to organize the data.
 #' @keywords Tx, GRx, germination speed, germination rate
@@ -15,7 +15,7 @@
 #' @examples
 #' calcspeed(Mydata)
 calcspeed <- function(data, fraction, treat_1, treat_2, treat_3, treat_4, treat_5) {
-  #Define the informed treatments (columns) to be grouped when calling the function or set standard to all columns besides cumfraction and CumTime.
+  #Define the informed treatments (columns) to be grouped when calling the function or set standard to all columns besides CumFraction and CumTime.
   if (missing(treat_5)) { #treat_5 not informed
     if (missing(treat_4)) { #treat_4 not informed
       if (missing(treat_3)) { #treat_3 not informed
@@ -41,8 +41,8 @@ calcspeed <- function(data, fraction, treat_1, treat_2, treat_3, treat_4, treat_
 
   # Calculate the time to the fraction selected using linear interpolation (approx function) after it calculates the inverse of time to generate the rate.
   treatments <- data %>% dplyr::group_by_at(treatcolnames) %>%
-    dplyr::mutate(Tx = approx(cumfraction, CumTime, xout = frac, ties = "ordered")$y,
-                  GRx = 1 / approx(cumfraction, CumTime, xout = frac, ties = "ordered")$y)
+    dplyr::mutate(Tx = approx(CumFraction, CumTime, xout = frac, ties = "ordered")$y,
+                  GRx = 1 / approx(CumFraction, CumTime, xout = frac, ties = "ordered")$y)
 
   treatcolnames <- c(treatcolnames, "Tx", "GRx")
 
@@ -100,7 +100,7 @@ cleandata <- function(data, treat_1, treat_2, treat_3, treat_4, treat_5) {
         t_5 <- paste(",", treat_5, sep = "")
       }
 
-      treatdataclean <- eval(parse(text = paste("dplyr::distinct(treatdata,", t_1, t_2, t_3, t_4, t_5, ", cumfraction, .keep_all = TRUE)", sep = "")))
+      treatdataclean <- eval(parse(text = paste("dplyr::distinct(treatdata,", t_1, t_2, t_3, t_4, t_5, ", CumFraction, .keep_all = TRUE)", sep = "")))
 
       return(treatdataclean)
     }
